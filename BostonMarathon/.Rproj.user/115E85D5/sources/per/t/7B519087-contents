@@ -1,0 +1,40 @@
+# Analysing and Visualizing Boston MArathon results for years 2015, 2016 and 2017
+setwd("C:/Sahana/R/BostonMarathonAnalysis")
+#including all the required libraries
+library(tidyverse)
+library(dplyr)
+library(readr) #to read csv files
+library(plotly)
+library(countrycode)
+#read csv file from the working directory
+#asigning each csv file into a dataframe 
+df1_2015 <- read.csv("BM_results_2015.csv", stringsAsFactors = FALSE)
+df2_2016 <- read.csv("BM_results_2016.csv", stringsAsFactors = FALSE)
+df3_2017 <- read.csv("BM_results_2017.csv", stringsAsFactors = FALSE)
+# view the dataframe structure
+str(df1_2015)
+str(df2_2016)
+str(df3_2017)
+#X and X.1 columns in 2015 and 2017 df contains no information and X in 2016.Selecting all other columns except X and X.1 from 3 dfs
+df1_2015 <- df1_2015 %>% select(-one_of(c("X","X.1")))
+head(df1_2015)
+df2_2016 <- df2_2016 %>% select(-one_of("X"))
+head(df2_2016)
+names(df2_2016)
+names(df1_2015)
+df3_2017 <- df3_2017 %>% select(-one_of(c("X", "X.1")))
+head(df3_2017)
+names(df3_2017)
+# since we have same names for all 2 dfs, we can combine 3 into 1 single dataframe using rbind
+df <- rbind(df1_2015, df2_2016, df3_2017)
+#get the dimension of the new dataframe using dim() and validate the total no of rows 
+dim(df)
+# understand the structure of the dataframe
+str(df)
+#visualize the total number of participants for each year 
+#selecting only the gender column for visualization, renames column M.F to Gender
+gender_dist <- df %>% select(M.F)
+head(gender_dist)
+g <- ggplot(gender_dist, aes(x = M.F, fill = M.F)) + geom_bar() 
+g <- g + labs(x = "Gender", y = "Particpants Count", title = "Gender Distribution") 
+
